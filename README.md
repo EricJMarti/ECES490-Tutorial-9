@@ -30,7 +30,7 @@ FragGeneScan generates three output files:
   * This file holds the nucleotide sequences that correspond to the genes described in the .out file.
 
 __Misc Notes:__
-__Biggest Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely. A newer version has been developed with support for cluster computing called FragGeneScan-Plus, but their code would not compile on Proteus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found [here][https://github.com/hallamlab/FragGeneScanPlus].
+__Biggest Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely. A newer version has been developed with support for cluster computing called FragGeneScan-Plus, but their code would not compile on Proteus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found [here](https://github.com/hallamlab/FragGeneScanPlus).
 
 ### HMMer
 For the offical (120 page) HMMer manual, click [here](http://hmmer.janelia.org) to visit the offical HMMer website and click the link to download the documentation PDF.
@@ -47,5 +47,106 @@ HMMer has many functions:
 * nhmmscan - Search DNA sequence against a DNA profile HMM database
 * hmmpress - Format HMM database into binary format for hmmscan
 
-__Our Workflow:__
-First, we need to download the Pfams database in order to run HMMer.
+### Workflow:
+General settings for Proteus:
+```bash
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -M ejm335@drexel.edu
+#$ -P nsftuesPrj
+#$ -pe shm 16-32
+#$ -l h_rt=48:00:00
+#$ -q all.q@@amdhosts
+
+. /etc/profile.d/modules.sh
+module load shared
+module load proteus
+module load sge/univa
+module load gcc/4.8.1
+```
+First we need to download our data. This command downloads our dataset (we must then move it all into one folder):
+```bash
+wget -r --no-parent ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra/SRX/SRX144/SRX144807/
+```
+Once all of the data is in one place, we need to convert all of these data files into FASTA format.
+```bash
+# Define the path for SRA Toolkit & HMMer
+PATH=/mnt/HA/groups/nsftuesGrp/.local/bin:$PATH
+
+# Convert from SRA to FASTA
+fastq-dump --fasta ${DATAPATH}/*.sra
+```
+Now we have all of the files we need to run FragGeneScan.
+```bash
+# Define Data/Package Locations
+FRAGPATH=/home/ejm335/fraggenescan-code
+TMPPATH=${TMP}/FragGeneScanOutput
+DATAPATH=/home/ejm335/TutorialData
+OUTPUTPATH=/home/ejm335/TutorialData/output
+
+# Define data array
+datafiles=(SRR492065 SRR492066 SRR492182 SRR492183 SRR492184 SRR492185 SRR492186 SRR492187 SRR492188 SRR492189 SRR492190 SRR492191 SRR492192 SRR492193 SRR492194 SRR492195 SRR492196 SRR492197)
+
+# Make a folder to hold output
+mkdir ${TMP}/FragGeneScanOutput
+
+# Run FragGeneScan (we ended up running this separately per file, each file takes ~9 hours to analyze)
+for file in ${datafiles[@]}
+do
+${FRAGPATH}/run_FragGeneScan.pl -genome=${DATAPATH}/${file}.fasta -out=${TMPPATH}/${file} -complete=0 -train=454_30
+done
+
+# Move output from scatch to home
+mv ${TMPPATH}/* ${OUTPUTPATH}/
+```
+We now have three output files from each FASTA file. Sample of each:
+__SRR492065.out__
+```
+>SRR492065.1 HWI-EAS385_0095_FC:2:1:6702:1434 length=200
+1	72	-	3	1.435572	I:10,	D:
+>SRR492065.2 HWI-EAS385_0095_FC:2:1:6931:1435 length=200
+1	86	-	3	1.358242	I:	D:
+>SRR492065.3 HWI-EAS385_0095_FC:2:1:9984:1431 length=200
+1	120	-	1	1.331453	I:	D:
+>SRR492065.4 HWI-EAS385_0095_FC:2:1:11577:1434 length=200
+>SRR492065.5 HWI-EAS385_0095_FC:2:1:15121:1434 length=200
+1	84	-	1	1.379883	I:	D:
+```
+__SRR492065.ffn__
+```
+>SRR492065.1_1_72_-
+GTAACGACAATCGTGACAAGTCGCGATTGGAGTGGTCTTCACAGTGAAGCCAAGCATAGGATGGCT
+>SRR492065.2_1_86_-
+ATNNNNNTTTCTTCCGACAAAGTTGATCAAGTCGCTGAGTTTGGAAATTCTAGTAAAATCACAGTCGGTGAGCCTGCTATT
+>SRR492065.3_1_120_-
+GTAAAACAANNNNNGAAAGGCGGCGATTGGCGTGCTNNNNNTTTGAATATTGTTTTAATTCTAGTGGCCATCTTGATTTACTATCCGTTCTTTGTAGCTTATGATAAAAATGAGCTT
+>SRR492065.5_1_84_-
+NNNNNTAAATCAGCCCATGACTCAGGTGCTGCTCTACTATGTAAACATGACGGTGTCGTAGAATTCGTCGATGCCAAAGAA
+```
+__SRR492065.faa__
+```
+>SRR492065.1_1_72_-
+VTTIVTSRDWSGLHSEAKHRMA
+>SRR492065.2_1_86_-
+XXXSSDKVDQVAEFGNSSKITVGEPAI
+>SRR492065.3_1_120_-
+VKQXXKGGDWRAXXLNIVLILVAILIYYPFFVAYDKNEL
+>SRR492065.5_1_84_-
+XXKSAHDSGAALLCKHDGVVEFVDAKE
+>SRR492065.6_1_200_+
+NYPCKIYIYDGNVKLENLNIDEDFIXXKEEIWKAXXTSXXXXXVPLNHXXILLQQLLLQTHFYAL
+```
+Now that we have run FragGeneScan, we now need to download the Pfams database in order to anotate each dataset's protein sequences (.faa). Navigate to the desired directory and run this command: 
+```bash
+wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam//releases/Pfam27.0/Pfam-A.hmm.gz
+```
+HMMer offers many commands to analyze data, but the most straightfoward one to use is hmmscan. This is because it takes in a protein sequence and compares it to a protein database in HMM format. In the previous command, we downloaded the Pfam-A database in the HMM format. Before we can use hmmscan, we need to compress this database into a binary format using hmmpress:
+```bash
+# Define the path for SRA Toolkit & HMMer
+PATH=/mnt/HA/groups/nsftuesGrp/.local/bin:$PATH
+
+# Compress Pfam Database
+hmmpress ${DATAPATH}/Pfam-A.hmm
+```
+This generates four files in the ${DATAPATH} path we defined earlier.
