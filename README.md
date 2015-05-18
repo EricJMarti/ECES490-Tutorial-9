@@ -128,7 +128,7 @@ EMBL provides an alternate method of scanning protein sequences against their Pf
 ```bash
 ${PFAMPATH}/pfam_scan.pl -fasta < Protein Sequence > -out < Pfam Database Directory >
 ```
-For more on Pfam, click (here)[http://pfam.xfam.org].
+For more on Pfam, click [here](http://pfam.xfam.org).
 
 ## Our Workflow:
 General settings for Proteus:
