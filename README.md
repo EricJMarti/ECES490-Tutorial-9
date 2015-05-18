@@ -148,11 +148,15 @@ module load proteus
 module load sge/univa
 module load gcc/4.8.1
 ```
-First we need to download our data. This command downloads our dataset (we must then move it all into one folder):
+First, we need to download our data. This command downloads our dataset (we must then move it all into one folder):
 ```bash
 wget -r --no-parent ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra/SRX/SRX144/SRX144807/
 ```
-Once all of the data is in one place, we need to convert all of these data files into FASTA format.
+Once all of the data is in one place, we need to unzip the files. 
+```bash
+gunzip *.gz
+```
+We need to convert all of the SRA data files into a FASTA format.
 ```bash
 # Define the path for SRA Toolkit & HMMer
 PATH=/mnt/HA/groups/nsftuesGrp/.local/bin:$PATH
