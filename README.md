@@ -278,3 +278,64 @@ Domain annotation for each model (and alignments):
   SRR492190.4_1_200_+  2 FKEVNIIVKADVQGXDEAVSASLQXXDVEGVRLX 35
                          589************************9999986 PP
 ```
+We can use the __--pfamtblout__ flag to produce a formatted output, and we can limit the inclusion threshold by specifying an inclusion e-value of 1e-5 with the __-incE__ flag. 
+```bash
+# HMMScan with formatted output
+hmmscan --pfamtblout ${OUTPATH}/${file} --cpu 32 --incE 0.00001 ${DBPATH}/Pfam-A.hmm ${DATAPATH}/${file}.faa
+```
+This produces output that looks like this (first 50 matches in the SRR492190 dataset):
+```
+# name                  bits   E-value   n   exp  bias    description
+# ------------------- ------ --------- --- ----- -----    ---------------------
+IF-2                    28.2   1.3e-06   1   1.2   0.1    Translation-initiation factor 2
+IF-2                    27.8   1.7e-06     1   0.1      1     42      2     35     15     48     Translation-initiation factor 2
+Asp23                   16.5    0.0074   1   1.1   0.0    Asp23 family
+Asp23                   16.3    0.0087     1   0.0     38     64     39     63      2     26     Asp23 family
+RIX1                    32.3   6.6e-08   1   1.1   0.2    rRNA processing/ribosome biogenesis
+RIX1                    32.3   6.6e-08     1   0.2      6     66     34     65    128    159     rRNA processing/ribosome biogenesis
+DUF2969                 23.2   5.1e-05   1   1.1   0.2    Protein of unknown function (DUF2969)
+DUF2969                 23.0   6.2e-05     1   0.2     30     65     36     64     18     45     Protein of unknown function (DUF2969)
+Malic_M                 13.6     0.036   1   1.1   0.0    Malic enzyme, NAD binding domain
+Malic_M                 13.5     0.038     1   0.0     24     56     34     56    165    190     Malic enzyme, NAD binding domain
+Glyco_hydro_35          14.1     0.022   1   1.0   0.0    Glycosyl hydrolases family 35
+Glyco_hydro_35          13.9     0.024     1   0.0     20     65     22     64     98    142     Glycosyl hydrolases family 35
+ThiW                    35.8   6.3e-09   1   1.0   0.8    Thiamine-precursor transporter protein (ThiW)
+ThiW                    35.7   6.5e-09     1   0.8      1     34      1     33     74    106     Thiamine-precursor transporter protein (ThiW)
+YbaB_DNA_bd             15.5     0.011   1   1.0   0.1    YbaB/EbfC DNA-binding family
+YbaB_DNA_bd             15.5     0.011     1   0.1      1     27      1     26     52     77     YbaB/EbfC DNA-binding family
+TPR_2                   24.8   1.2e-05   1   1.3   0.0    Tetratricopeptide repeat
+TPR_1                   24.3   1.5e-05   1   1.4   0.0    Tetratricopeptide repeat
+TPR_8                   24.3   1.6e-05   1   1.2   0.0    Tetratricopeptide repeat
+TPR_12                  23.3   4.4e-05   1   1.1   0.0    Tetratricopeptide repeat
+TPR_7                   22.9   4.6e-05   1   1.4   0.0    Tetratricopeptide repeat
+TPR_11                  18.6     0.001   1   1.1   0.0    TPR repeat
+TPR_14                  18.1    0.0028   1   1.3   0.0    Tetratricopeptide repeat
+TPR_10                  16.9    0.0041   1   1.3   0.0    Tetratricopeptide repeat
+TPR_16                  16.9    0.0076   1   1.2   0.1    Tetratricopeptide repeat
+TPR_6                   15.9     0.013   1   1.2   0.0    Tetratricopeptide repeat
+TPR_2                   24.2   1.8e-05     1   0.0      5     35      9     34      5     30     Tetratricopeptide repeat
+TPR_8                   23.8   2.3e-05     1   0.0      5     35      9     34      5     30     Tetratricopeptide repeat
+TPR_1                   23.6   2.5e-05     1   0.0      4     35     10     34      6     30     Tetratricopeptide repeat
+TPR_12                  23.0   5.4e-05     1   0.0      3     51      9     43      9     43     Tetratricopeptide repeat
+TPR_7                   22.4   6.5e-05     1   0.0      6     50     10     33      4     29     Tetratricopeptide repeat
+TPR_11                  18.5    0.0011     1   0.0      4     59     10     35      8     33     TPR repeat
+TPR_14                  17.6    0.0041     1   0.0      6     45     10     34      6     30     Tetratricopeptide repeat
+TPR_10                  16.5    0.0058     1   0.0      4     37     11     33      8     30     Tetratricopeptide repeat
+TPR_16                  16.5    0.0097     1   0.1      9     45     11     35      3     27     Tetratricopeptide repeat
+TPR_6                   15.3     0.019     1   0.0     10     34     10     33      5     28     Tetratricopeptide repeat
+CbiQ                    16.8    0.0037   1   1.1   0.0    Cobalt transport protein
+CbiQ                    16.5    0.0046     1   0.0      1     35      2     33    174    205     Cobalt transport protein
+DUF1129                 13.8     0.026   1   1.1   1.0    Protein of unknown function (DUF1129)
+DUF1129                 13.8     0.026     1   1.0     13     66     31     65    159    193     Protein of unknown function (DUF1129)
+SHMT                    19.6   0.00024   1   1.0   1.0    Serine hydroxymethyltransferase
+SHMT                    19.5   0.00025     1   1.0      1     38      1     27    117    148     Serine hydroxymethyltransferase
+SAICAR_synt             17.3    0.0018   1   1.1   0.1    SAICAR synthetase
+SAICAR_synt             17.3    0.0018     1   0.1      1     59      1     35      5     38     SAICAR synthetase
+H_kinase_N              19.8   0.00046   1   1.1   0.0    Signal transduction histidine kinase
+H_kinase_N              19.6   0.00052     1   0.0      1     42      1     34     50     83     Signal transduction histidine kinase
+Cna_B                   19.5   0.00059   1   1.2   0.5    Cna protein B-type domain
+Cna_B                   19.2   0.00075     1   0.5      1     37      1     30     36     66     Cna protein B-type domain
+OTCace                  15.4     0.012   1   1.1   0.0    Aspartate/ornithine carbamoyltransferase, Asp/Orn binding domain
+OTCace                  15.3     0.014     1   0.0      1     38      2     32     51     81     Aspartate/ornithine carbamoyltransferase, Asp/Orn binding domain
+MoaE                    25.4   9.4e-06   1   1.1   0.0    MoaE protein
+```
