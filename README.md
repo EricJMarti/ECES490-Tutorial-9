@@ -29,35 +29,102 @@ FragGeneScan generates three output files:
 * SeqName.ffn
   * This file holds the nucleotide sequences that correspond to the genes described in the .out file.
 
-__Misc Notes:__
-__Biggest Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely. A newer version has been developed with support for cluster computing called FragGeneScan-Plus, but their code would not compile on Proteus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found [here](https://github.com/hallamlab/FragGeneScanPlus).
+__HUGE Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely. A newer version has been developed with support for cluster computing called FragGeneScan-Plus, but their code would not compile on Proteus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found [here](https://github.com/hallamlab/FragGeneScanPlus).
 
 ### HMMer
 For the offical (120 page) HMMer manual, click [here](http://hmmer.janelia.org) to visit the offical HMMer website and click the link to download the documentation PDF.
 
 HMMer has many functions:
-* hmmbuild - Build profile HMM from input multiple alignment
-* hmmalign - Make multiple aligment to a common profile HMM
-* phmmer - Search single protein sequence against protein sequence database (BLASTP-like)
-* jackhmmer - Iteratively search protein sequence against protein sequence database (PSIBLAST-like)
-* hmmsearch - Search protein profile HMM against a protein sequence database
-* hmmscan - Seach protein sequence against a protein profile HMM database
-* hmmpgmd - Search daemon for submitting jobs to hmmer.org
-* nhmmer - Search DNA sequence, alignment, or profile HMM against a DNA sequence database (BLASTN-like)
-* nhmmscan - Search DNA sequence against a DNA profile HMM database
-* hmmpress - Format HMM database into binary format for hmmscan
+* __hmmbuild__ - Build profile HMM from input multiple alignment
+* __hmmalign__ - Make multiple aligment to a common profile HMM
+* __phmmer__ - Search single protein sequence against protein sequence database (BLASTP-like)
+* __jackhmmer__ - Iteratively search protein sequence against protein sequence database (PSIBLAST-like)
+* __hmmsearch__ - Search protein profile HMM against a protein sequence database
+* __hmmscan__ - Seach protein sequence against a protein profile HMM database
+* __hmmpgmd__ - Search daemon for submitting jobs to hmmer.org
+* __nhmmer__ - Search DNA sequence, alignment, or profile HMM against a DNA sequence database (BLASTN-like)
+* __nhmmscan__ - Search DNA sequence against a DNA profile HMM database
+* __hmmpress__ - Format HMM database into binary format for hmmscan
 
-In this tutorial, we use __hmmpress__ and __hmmscan__ to analyze the protein sequences produced by FragGeneScan. The basic syntax for hmmpress is as follows:
+This package encourages the user to create an HMM profile for the data being analyzed. A sample HMM profile looks like this (taken directly from the HMMer3.1 user manual):
+```
+HMMER3/f [3.1 | February 2013] NAME fn3
+ACC PF00041.13
+DESC Fibronectin type III domain LENG 86
+ALPH amino
+RF no
+MM no
+CONS yes
+CS yes
+MAP yes
+DATE Fri
+NSEQ 106
+EFFN 11.415833
+CKSUM 3564431818
+GA 8.00 7.20
+TC 8.00 7.20
+NC 7.90 7.90
+STATS LOCAL MSV
+STATS LOCAL VITERBI -9.7737 0.71847 STATS LOCAL FORWARD -3.8341 0.71847
+HMM
+-9.4043 0.71847
+A C D E F G H I (...) Y
+(...)
+//
+85 2.48488 5.72055
+2.68618 4.42225
+0.00338 6.08833
+86 3.03720 5.94099
+2.68618 4.42225 0.00227 6.08723
+Feb 15 06:04:13 2013
+m->m m->i COMPO 2.70330 4.91262 2.68618 4.42225 0.00338 6.08833
+1 3.16986 5.21447 2.68629 4.42236 0.09796 2.38361
+2 2.70230 5.97353 2.68618 4.42225 0.00338 6.08833
+m->d i->m i->i d->m 3.03272 2.64079 3.60307 2.84344 2.77519 2.73123 3.46354 2.40513 6.81068 0.61958 0.77255 0.00000 4.52134 3.29953 4.34285 4.18764 2.77530 2.73088 3.46365 2.40512 6.81068 0.10064 2.34607 0.48576 2.24744 2.62947 5.31433 2.60356 2.77519 2.73123 3.46354 2.40513 6.81068 0.61958 0.77255 0.48576
+3.87501 1.97538 3.04853 3.48010
+2.77519 2.73123 3.46354 2.40513 6.81068 0.61958 0.77255 0.48576 3.75455 2.96917 5.26587 2.91682
+2.77519 2.73123 3.46354 2.40513 * 0.61958 0.77255 0.00000
+d->d
+3.74204 3.07942 (...) 3.21526 3.72494 3.29354 (...) 3.61503
+*
+4.30886 3.35801 (...) 3.93889 3.72505 3.29365 (...) 3.61514 0.95510
+4.43584 4.79731 (...) 4.25623 3.72494 3.29354 (...) 3.61503 0.95510
+4.51877 3.51898 (...) 3.43366
+3.72494 3.29354 (...) 3.61503 0.95510
+3.66571 4.11840 (...) 4.99111
+3.72494 3.29354 (...) 3.61503 *
+1p---
+3s---
+120 e - - B
+121 s - - E
+```
+
+Creating an HMM profile is not always possible because the parser in __hmmbuild__ is incredibly selective of what data format it accepts. The recommended data format is Stockholm, which looks like this (again, taken from the HMMer3.1 user manual): 
+```
+# STOCKHOLM 1.0
+       seq1  ACDEF...GHIKL
+       seq2  ACDEF...GHIKL
+       seq3  ...EFMNRGHIKL
+       seq1  MNPQTVWY
+       seq2  MNPQTVWY
+       seq3  MNPQT...
+       //
+```
+
+In this tutorial, we revert to using __hmmpress__ and __hmmscan__ to analyze the protein sequences produced by FragGeneScan (since HMM profiles cannot be created with our data). The __hmmscan__ program will accept a protein sequence and compare it against an HMM database. Before __hmmscan__ can be used, the HMM database must be converted into a binary format to optimize the speed of the scan. The __hmmpress__ program prepares an HMM profile for __hmmscan__, and its basic syntax is as follows:
 ```bash
 hmmpress < HMM profile >
 ```
-The basic syntax for hmmscan is as follows:
+The basic syntax for __hmmscan__ is as follows:
 ```bash
 hmmscan <options> < HMM profile > < FAA file >
 ```
+For the complete set of options that go with every command of HMMer, consult the user manual or the man pages using the __-h__ flag after the HMMer command.
+
+__Speed of HMMer:__ The user manual states that HMMer 3.1 should be as fast as BLAST for "most protein queries." However, the older FASTA format does not fall into this category. Even with 32 cores available, our first dataset is STILL being processed as we present this tutorial!
 
 ### Pfam_Scan
-EMBL provides an alternate method of scanning protein sequences against their Pfam database. They provide a tool called Pfam_Scan, which is essentially a Perl script that runs HMMer against the Pfam-A and Pfam-B databases. It also offers a "pretty" output format for easier interpretation of the data. We were not able to get this script to install on Proteus due to permission issues around modifying the Perl configuration. If you were to run this script, the general syntax is:
+EMBL provides an alternate method of scanning protein sequences against their Pfam database. They provide a tool called Pfam_Scan, which is essentially a Perl script that runs HMMer against the Pfam-A and Pfam-B databases. It also offers a "pretty" output format for easier interpretation of the data, which includes Pfam abundance info. We were not able to get this script to install on Proteus due to permission issues around modifying the Perl configuration. However, if you were to run this script, the general syntax is:
 ```bash
 ${PFAMPATH}/pfam_scan.pl -fasta < Protein Sequence > -out < Pfam Database Directory >
 ```
