@@ -47,7 +47,23 @@ HMMer has many functions:
 * nhmmscan - Search DNA sequence against a DNA profile HMM database
 * hmmpress - Format HMM database into binary format for hmmscan
 
-### Workflow:
+In this tutorial, we use __hmmpress__ and __hmmscan__ to analyze the protein sequences produced by FragGeneScan. The basic syntax for hmmpress is as follows:
+```bash
+hmmpress < HMM profile >
+```
+The basic syntax for hmmscan is as follows:
+```bash
+hmmscan <options> < HMM profile > < FAA file >
+```
+
+### Pfam_Scan
+EMBL provides an alternate method of scanning protein sequences against their Pfam database. They provide a tool called Pfam_Scan, which is essentially a Perl script that runs HMMer against the Pfam-A and Pfam-B databases. It also offers a "pretty" output format for easier interpretation of the data. We were not able to get this script to install on Proteus due to permission issues around modifying the Perl configuration. If you were to run this script, the general syntax is:
+```bash
+${PFAMPATH}/pfam_scan.pl -fasta < Protein Sequence > -out < Pfam Database Directory >
+```
+For more on Pfam, click (here)[http://pfam.xfam.org].
+
+## Our Workflow:
 General settings for Proteus:
 ```bash
 #!/bin/bash
