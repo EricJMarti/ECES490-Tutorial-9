@@ -30,7 +30,7 @@ FragGeneScan generates three output files:
   * This file holds the nucleotide sequences that correspond to the genes described in the .out file.
 
 __Misc Notes:__
-__Biggest Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely. A newer version has been developed with support for cluster computing called FragGeneScan-Plus, but their code would not compile on Proteus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found (here)[https://github.com/hallamlab/FragGeneScanPlus].
+__Biggest Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely. A newer version has been developed with support for cluster computing called FragGeneScan-Plus, but their code would not compile on Proteus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found [here][https://github.com/hallamlab/FragGeneScanPlus].
 
 ### HMMer
 For the offical (120 page) HMMer manual, click [here](http://hmmer.janelia.org) to visit the offical HMMer website and click the link to download the documentation PDF.
@@ -47,3 +47,5 @@ HMMer has many functions:
 * nhmmscan - Search DNA sequence against a DNA profile HMM database
 * hmmpress - Format HMM database into binary format for hmmscan
 
+__Our Workflow:__
+First, we need to download the Pfams database in order to run HMMer.
