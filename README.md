@@ -55,7 +55,7 @@ General settings for Proteus:
 #$ -cwd
 #$ -M ejm335@drexel.edu
 #$ -P nsftuesPrj
-#$ -pe shm 16-32
+#$ -pe shm 32
 #$ -l h_rt=48:00:00
 #$ -q all.q@@amdhosts
 
@@ -146,7 +146,52 @@ HMMer offers many commands to analyze data, but the most straightfoward one to u
 # Define the path for SRA Toolkit & HMMer
 PATH=/mnt/HA/groups/nsftuesGrp/.local/bin:$PATH
 
+# Define other paths
+DBPATH=/home/ejm335/TutorialData
+DATAPATH=/home/ejm335/TutorialData/output/
+OUTPATH=/home/ejm335/TutorialData/output/HMMer
+
 # Compress Pfam Database
-hmmpress ${DATAPATH}/Pfam-A.hmm
+hmmpress ${DBPATH}/Pfam-A.hmm
 ```
-This generates four files in the ${DATAPATH} path we defined earlier.
+This generates four binary files in the ${DATAPATH} path we defined earlier. We are now all set to run hmmscan (and wait a VERY LONG time):
+```bash
+## Run HMMer for each protein sequence
+for file in ${datafiles[@]}
+do
+hmmscan -o ${OUTPATH}/${file} --cpu 32 ${DBPATH}/Pfam-A.hmm ${DATAPATH}/${file}.faa
+done
+```
+This creates a long output file in the ${OUTPATH} directory that looks like this:
+```
+# hmmscan :: search sequence(s) against a profile database
+# HMMER 3.1b1 (May 2013); http://hmmer.org/
+# Copyright (C) 2013 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query sequence file:             /home/ejm335/TutorialData/output//SRR492190.faa
+# target HMM database:             /home/ejm335/TutorialData/Pfam-A.hmm
+# number of worker threads:        32
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       SRR492190.4_1_200_+  [L=65]
+Scores for complete sequence (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Model    Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+    1.3e-06   28.2   0.1    1.7e-06   27.8   0.1    1.2  1  IF-2      Translation-initiation factor 2
+
+
+Domain annotation for each model (and alignments):
+>> IF-2  Translation-initiation factor 2
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   27.8   0.1   1.2e-10   1.7e-06      15      48 ..       2      35 ..       1      42 [. 0.90
+
+  Alignments for each domain:
+  == domain 1  score: 27.8 bits;  conditional E-value: 1.2e-10
+                 IF-2 15 vkelnvivkaDvqGsleAlkesLeklsteevkvk 48
+                          ke+n+ivkaDvqG  eA+++sL+  + e v++ 
+  SRR492190.4_1_200_+  2 FKEVNIIVKADVQGXDEAVSASLQXXDVEGVRLX 35
+                         589************************9999986 PP
+```
