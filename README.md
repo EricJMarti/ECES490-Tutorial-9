@@ -29,7 +29,11 @@ FragGeneScan generates three output files:
 * SeqName.ffn
   * This file holds the nucleotide sequences that correspond to the genes described in the .out file.
 
-__HUGE Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely. A newer version has been developed with support for cluster computing called FragGeneScan-Plus, but their code would not compile on Proteus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found [here](https://github.com/hallamlab/FragGeneScanPlus).
+__HUGE Issue with FragGeneScan:__ No multithreaded support (this package is REALLY SLOW). Some of our datasets took 9-12 hours to analyze completely.
+
+A newer version has been developed with support for cluster computing called FragGeneScan-Plus. FragGeneScan-Plus claims to analyze data 5x faster than FragGeneScan on a single core, and about 50x faster using 8 cores. This package can be found [here](https://github.com/hallamlab/FragGeneScanPlus).
+
+__Update:__ In our tests using 64 cores, FragGeneScan-Plus analyzed one of our datasets in minutes! This is a HUGE improvement over FragGeneScan.
 
 ### HMMer
 For the offical (120 page) HMMer manual, click [here](http://hmmer.janelia.org) to visit the offical HMMer website and click the link to download the documentation PDF.
